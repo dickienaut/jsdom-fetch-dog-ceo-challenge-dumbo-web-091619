@@ -1,17 +1,9 @@
-console.log('%c HI', 'color: firebrick')
 let dogDiv = document.getElementById("dog-image-container")
 let dogBreedUl = document.getElementById('dog-breeds')
 const breedUrl = 'https://dog.ceo/api/breeds/list/all'
 let dogDropDown = document.getElementById("breed-dropdown")
-
-// Add JavaScript so that:
-//
-// - on page load
-// - fetch the images using the url above ⬆️
-// - parse the response as `JSON`
-// - add image elements to the DOM **for each**🤔 image in the array
-
 const imgUrl = "https://dog.ceo/api/breeds/image/random/4"
+
 
 fetch(imgUrl)
 .then(response => response.json())
@@ -62,15 +54,31 @@ dogBreedUl.addEventListener("click", function(event) {
 
 let dropDown = document.getElementById("breed-dropdown")
 
-dropDown.addEventListener('change', function(event) {
-  putDogsOnPage()
-  let dogList = document.querySelectorAll('li')
-  dogList.forEach(function(dogLi){
-    if (dogLi.innerText[0] != event.target.value) {
-      dogLi.remove()
+dropDown.addEventListener("change", function(event){
+    fetch(breedUrl)
+    .then(res => res.json())
+    .then((responseObject) => {
+        // debugger
+        for(const key in responseObject.message){
 
-    }
-
-  })
-
+            if (responseObject.message[key].length != 0) {
+                responseObject.message[key].forEach(function(subbreed){
+                    let createdList = document.createElement("li")
+                    createdList.innerText = `${subbreed} ${key}`
+                    dogUl.append(createdList)
+                })
+            }
+            else {
+                let createdList = document.createElement("li")
+                createdList.innerText = key
+                dogUl.append(createdList)
+            }
+        }
+        let dogList = document.querySelectorAll('li')
+        dogList.forEach(function(listThing){
+            if (listThing.innerText[0] != event.target.value){
+                listThing.remove()
+            }
+        })
+    })
 })
